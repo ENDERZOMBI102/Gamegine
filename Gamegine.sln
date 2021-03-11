@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gamengine", "Gamengine\Gamengine.csproj", "{53D670BE-BA02-40CF-A954-DDA7C9A532F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gamegine", "Gamegine\Gamegine.csproj", "{53D670BE-BA02-40CF-A954-DDA7C9A532F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{DF9B0315-97D6-4229-BEB3-9CCACA59611C}"
 EndProject

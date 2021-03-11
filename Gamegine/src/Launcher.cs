@@ -1,8 +1,7 @@
-﻿using System;
-using Gamengine;
+﻿using Gamengine.core;
 
-namespace Sandbox {
-	static class Program {
+namespace Gamengine {
+	public class Launcher {
 		static void Main(string[] args) {
 			Engine engine = new Engine();
 			engine.Run();
