@@ -11,15 +11,18 @@ namespace Gamengine.core  {
 			0.5f, -0.5f, 0.0f, //Bottom-right vertex
 			0.0f, 0.5f, 0.0f //Top vertex
 		};
+
+		private Vertex[] _vertices = {
+			new(-0.5f, -0.5f, 0.0f),
+			new(0.5f, -0.5f, 0.0f),
+			new(0.0f, 0.5f, 0.0f),
+		};
+		
 		private int _vertexBufferObject;
 		private int _vertexArrayObject;
 		private readonly InputSystem _inputSystem = new();
 		private Shader _shader;
 
-		public InputSystem GetInputSystem() {
-			return _inputSystem;
-		}
-		
 		public Engine() : base( GameWindowSettings.Default, NativeWindowSettings.Default ) {
 		}
 
@@ -50,7 +53,7 @@ namespace Gamengine.core  {
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 			GL.EnableVertexAttribArray(0);
 			
-			_shader = new Shader("C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/triangle.shader");
+			_shader = new Shader("src/shader/triangle.shader");
 
 			base.OnLoad();
 		}
@@ -82,6 +85,10 @@ namespace Gamengine.core  {
 
 		public void Destroy() {
 			DestroyWindow();
+		}
+		
+		public InputSystem GetInputSystem() {
+			return _inputSystem;
 		}
 	}
 }
