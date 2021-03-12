@@ -13,4 +13,11 @@
       <PackageReference Include="SupersonicSound" Version="4.1.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="src\shader\triangle.shader" />
+      <Content Include="src\shader\triangle.shader">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
