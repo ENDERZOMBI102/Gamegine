@@ -50,11 +50,8 @@ namespace Gamengine.core  {
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 			GL.EnableVertexAttribArray(0);
 			
-			Shader = new Shader(
-				 "C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/shader.vert",
-				 "C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/shader.frag"
-				);
-			
+			Shader = new Shader("C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/triangle.shader", "triangle");
+
 			base.OnLoad();
 		}
 
