@@ -8,15 +8,13 @@ namespace Gamengine.core.render {
 	public class Shader : IDisposable {
 		
 		private int _handle;
-		private readonly string _name;
 		private readonly string _path;
 		private bool _disposedValue;
 		private bool _reloading = false;
 		private int _vertexShader;
 		private int _fragmentShader;
 
-		public Shader(string shaderPath, string name) {
-			_name = name;
+		public Shader(string shaderPath) {
 			_path = shaderPath;
 			// load, compile and execute shaders
 			LoadShaders();
@@ -34,10 +32,6 @@ namespace Gamengine.core.render {
 
 		public int GetAttribLocation(string name) {
 			return GL.GetAttribLocation(_handle, name);
-		}
-
-		public string GetName() {
-			return _name;
 		}
 
 		public string GetPath() {
