@@ -13,8 +13,8 @@ namespace Gamengine.core  {
 		};
 		private int _vertexBufferObject;
 		private int _vertexArrayObject;
-		private InputSystem _inputSystem = new();
-		private Shader Shader;
+		private readonly InputSystem _inputSystem = new();
+		private Shader _shader;
 
 		public InputSystem GetInputSystem() {
 			return _inputSystem;
@@ -50,13 +50,13 @@ namespace Gamengine.core  {
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 			GL.EnableVertexAttribArray(0);
 			
-			Shader = new Shader("C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/triangle.shader", "triangle");
+			_shader = new Shader("C:/Users/Flavia/RiderProjects/Gamengine/Gamegine/src/shader/triangle.shader");
 
 			base.OnLoad();
 		}
 
 		protected override void OnUnload() {
-			Shader.Dispose();
+			_shader.Dispose();
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 			GL.DeleteBuffer(_vertexBufferObject);
 			base.OnUnload();
@@ -65,7 +65,7 @@ namespace Gamengine.core  {
 		protected override void OnRenderFrame(FrameEventArgs args) {
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
-			Shader.Use();
+			_shader.Use();
 			GL.BindVertexArray(_vertexArrayObject);
 			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 			
