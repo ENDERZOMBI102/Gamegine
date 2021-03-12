@@ -26,6 +26,8 @@ namespace Gamengine.core.render {
 
 		public void Reload() {
 			_reloading = true;
+			GL.DeleteProgram(_handle);
+			_handle = GL.CreateProgram();
 			LoadShaders();
 			_reloading = false;
 		}
@@ -40,20 +42,22 @@ namespace Gamengine.core.render {
 		
 		private static string[] LoadShadersCode(string path) {
 			path = path.Replace('\\', '/');
-			
-			string fragmentShaderSource;
-			string vertexShaderSource;
 			string commonShader;
+			
 			// load shader code
 			using (StreamReader reader = new StreamReader(path, Encoding.UTF8)) {
 				commonShader = reader.ReadToEnd();
 			}
+			// check if we're been scammed and there's no shader code
+			if (commonShader == String.Empty || commonShader.Contains("#VERTEX") && commonShader.Contains("#FRAGMENT") ) {
+				throw new FormatException("Shader source is empty!");
+			}
 
-			fragmentShaderSource = commonShader.Substring(
+			string fragmentShaderSource = commonShader.Substring(
 				commonShader.IndexOf("#FRAGMENT") + 11,
 				commonShader.Length - commonShader.IndexOf("#VERTEX") - 17
 			);
-			vertexShaderSource = commonShader.Substring(
+			string vertexShaderSource = commonShader.Substring(
 				commonShader.IndexOf("#VERTEX") + 9
 			);
 			
