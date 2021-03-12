@@ -48,8 +48,11 @@ namespace Gamengine.core.render {
 			using (StreamReader reader = new StreamReader(path, Encoding.UTF8)) {
 				commonShader = reader.ReadToEnd();
 			}
+			
+			
+			
 			// check if we're been scammed and there's no shader code
-			if (commonShader == String.Empty || commonShader.Contains("#VERTEX") && commonShader.Contains("#FRAGMENT") ) {
+			if (commonShader == String.Empty || !( commonShader.Contains("#VERTEX") && commonShader.Contains("#FRAGMENT") ) ) {
 				throw new FormatException("Shader source is empty!");
 			}
 
