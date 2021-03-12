@@ -8,8 +8,7 @@ namespace Sandbox {
 		static void Main(string[] args) {
 			Engine engine = new Engine();
 			engine.GetInputSystem().RegisterInput(Keys.R, OnKeyR);
-			engine.GetInputSystem().RegisterInput(Keys.Escape, window => engine.Destroy() );
-			
+			engine.GetInputSystem().RegisterInput(Keys.Escape, window => engine.Destroy());
 			engine.GetInputSystem().RegisterInput(Keys.K, window => Console.WriteLine("delay!"), 400);
 			engine.Run();
 		}
