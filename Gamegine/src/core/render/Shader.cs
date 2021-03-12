@@ -7,13 +7,13 @@ namespace Gamengine.core.render {
 	
 	public class Shader : IDisposable {
 		
-		private int Handle;
-		private string _name;
-		private string _path;
+		private int _handle;
+		private readonly string _name;
+		private readonly string _path;
 		private bool _disposedValue;
 		private bool _reloading = false;
-		public int VertexShader;
-		public int FragmentShader;
+		private int _vertexShader;
+		private int _fragmentShader;
 
 		public Shader(string shaderPath, string name) {
 			_name = name;
@@ -23,7 +23,7 @@ namespace Gamengine.core.render {
 		}
 		
 		public void Use() {
-			GL.UseProgram(Handle);
+			GL.UseProgram(_handle);
 		}
 
 		public void Reload() {
@@ -33,7 +33,7 @@ namespace Gamengine.core.render {
 		}
 
 		public int GetAttribLocation(string name) {
-			return GL.GetAttribLocation(Handle, name);
+			return GL.GetAttribLocation(_handle, name);
 		}
 
 		public string GetName() {
@@ -73,23 +73,23 @@ namespace Gamengine.core.render {
 			string[] sources = LoadShadersCode(_path);
 			
 			// generate shaders
-			VertexShader = GL.CreateShader(ShaderType.VertexShader);
-			GL.ShaderSource(VertexShader, sources[1]);
+			_vertexShader = GL.CreateShader(ShaderType.VertexShader);
+			GL.ShaderSource(_vertexShader, sources[1]);
 			
-			FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-			GL.ShaderSource(FragmentShader, sources[0]);
+			_fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+			GL.ShaderSource(_fragmentShader, sources[0]);
 			
 			// compile shaders
-			GL.CompileShader(VertexShader);
-			GL.CompileShader(FragmentShader);
+			GL.CompileShader(_vertexShader);
+			GL.CompileShader(_fragmentShader);
 			
-			string infoLogVert = GL.GetShaderInfoLog(VertexShader); // error check
+			string infoLogVert = GL.GetShaderInfoLog(_vertexShader); // error check
 			if (infoLogVert != String.Empty) {
 				Console.WriteLine(infoLogVert);
 				if (_reloading) return;
 			}
 
-			string infoLogFrag = GL.GetShaderInfoLog(FragmentShader); // error check
+			string infoLogFrag = GL.GetShaderInfoLog(_fragmentShader); // error check
 			if (infoLogFrag != String.Empty) {
 				Console.WriteLine(infoLogFrag);
 				if (_reloading) return;
@@ -97,27 +97,27 @@ namespace Gamengine.core.render {
 			
 			// create the program
 			// but only if we're not reloading
-			if (! _reloading ) Handle = GL.CreateProgram();
+			if (! _reloading ) _handle = GL.CreateProgram();
 
-			GL.AttachShader(Handle, VertexShader);
-			GL.AttachShader(Handle, FragmentShader);
+			GL.AttachShader(_handle, _vertexShader);
+			GL.AttachShader(_handle, _fragmentShader);
 
-			GL.LinkProgram(Handle);
+			GL.LinkProgram(_handle);
 			
 			// cleanup
-			GL.DetachShader(Handle, VertexShader);
-			GL.DetachShader(Handle, FragmentShader);
-			GL.DeleteShader(FragmentShader);
-			GL.DeleteShader(VertexShader);
+			GL.DetachShader(_handle, _vertexShader);
+			GL.DetachShader(_handle, _fragmentShader);
+			GL.DeleteShader(_fragmentShader);
+			GL.DeleteShader(_vertexShader);
 		}
 		
 		~Shader() {
-			GL.DeleteProgram(Handle);
+			GL.DeleteProgram(_handle);
 		}
 		
 		protected virtual void Dispose(bool disposing) {
 			if (!_disposedValue) {
-				GL.DeleteProgram(Handle);
+				GL.DeleteProgram(_handle);
 
 				_disposedValue = true;
 			}
