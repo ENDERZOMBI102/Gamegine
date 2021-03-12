@@ -115,7 +115,7 @@ namespace Gamengine.core.render {
 			GL.DeleteProgram(_handle);
 		}
 		
-		protected virtual void Dispose(bool disposing) {
+		protected void Dispose(bool disposing) {
 			if (!_disposedValue) {
 				GL.DeleteProgram(_handle);
 
