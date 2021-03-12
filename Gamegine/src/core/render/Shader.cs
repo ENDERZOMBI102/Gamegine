@@ -112,13 +112,12 @@ namespace Gamengine.core.render {
 		~Shader() {
 			GL.DeleteProgram(_handle);
 		}
-		
-		protected void Dispose(bool disposing) {
-			if (!_disposedValue) {
-				GL.DeleteProgram(_handle);
 
-				_disposedValue = true;
-			}
+		private void Dispose(bool disposing) {
+			if (_disposedValue) return;
+			GL.DeleteProgram(_handle);
+
+			_disposedValue = true;
 		}
 		
 		public void Dispose() {
