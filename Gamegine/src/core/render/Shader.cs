@@ -6,22 +6,21 @@ using OpenTK.Graphics.OpenGL4;
 namespace Gamengine.core.render {
 	
 	public class Shader : IDisposable {
+		
 		int Handle;
 		public int VertexShader;
 		public int FragmentShader;
-		private bool disposedValue = false;
+		private bool _disposedValue;
 
 
 		public Shader(string vertexPath, string fragmentPath) {
 			// load shader code
-			string VertexShaderSource;
-
+			string vertexShaderSource;
 			using (StreamReader reader = new StreamReader(vertexPath, Encoding.UTF8)) {
 				VertexShaderSource = reader.ReadToEnd();
 			}
 
-			string FragmentShaderSource;
-
+			string fragmentShaderSource;
 			using (StreamReader reader = new StreamReader(fragmentPath, Encoding.UTF8)) {
 				FragmentShaderSource = reader.ReadToEnd();
 			}
@@ -35,15 +34,15 @@ namespace Gamengine.core.render {
 			GL.CompileShader(VertexShader);
 
 			string infoLogVert = GL.GetShaderInfoLog(VertexShader);
-			if (infoLogVert != System.String.Empty)
-				System.Console.WriteLine(infoLogVert);
+			if (infoLogVert != String.Empty)
+				Console.WriteLine(infoLogVert);
 
 			GL.CompileShader(FragmentShader);
 
 			string infoLogFrag = GL.GetShaderInfoLog(FragmentShader);
 
-			if (infoLogFrag != System.String.Empty)
-				System.Console.WriteLine(infoLogFrag);
+			if (infoLogFrag != String.Empty)
+				Console.WriteLine(infoLogFrag);
 			// create the program
 			Handle = GL.CreateProgram();
 
@@ -63,11 +62,20 @@ namespace Gamengine.core.render {
 		}
 
 		protected virtual void Dispose(bool disposing) {
-			if (!disposedValue) {
+			if (!_disposedValue) {
 				GL.DeleteProgram(Handle);
 
-				disposedValue = true;
+				_disposedValue = true;
 			}
+		}
+
+		public int GetAttribLocation(string name) {
+			return GL.GetAttribLocation(Handle, name);
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		~Shader() {
@@ -75,10 +83,26 @@ namespace Gamengine.core.render {
 		}
 
 
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
+		public static Shader ShaderFromFile(string path) {
+			path = path.Replace('\\', '/');
+			
+			string fragmentShaderSource;
+			string vertexShaderSource;
+			string commonShader;
+			string shaderName = path.Substring(
+				path.LastIndexOf('/'),
+				path.LastIndexOf('.') - path.LastIndexOf('/')
+			);
+			// load shader code
+			using (StreamReader reader = new StreamReader(path, Encoding.UTF8)) {
+				commonShader = reader.ReadToEnd();
+			}
+
+			fragmentShaderSource = commonShader.Substring( commonShader.IndexOf("// FRAGMENT SHADER") );
+
+
+
+
 		}
-		
 	}
 }
