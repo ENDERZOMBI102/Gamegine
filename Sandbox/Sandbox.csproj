@@ -9,4 +9,8 @@
       <ProjectReference Include="..\Gamegine\Gamegine.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="BulletSharp" Version="0.11.1" />
+    </ItemGroup>
+
 </Project>

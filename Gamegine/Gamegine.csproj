@@ -15,8 +15,11 @@
 
     <ItemGroup>
       <None Remove="src\shader\triangle.shader" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Include="src\shader\triangle.shader">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 

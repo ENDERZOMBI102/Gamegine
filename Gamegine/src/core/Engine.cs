@@ -1,86 +1,76 @@
-﻿using Gamengine.core.render;
+﻿using System.Drawing;
+using BulletSharp.Math;
+using Gamengine.core.render;
+using log4net;
+using log4net.Config;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using Vector3 = OpenTK.Mathematics.Vector3;
 
 namespace Gamengine.core  {
 	public class Engine : GameWindow {
-		
-		private float[] vertices = {
-			-0.5f, -0.5f, 0.0f, //Bottom-left vertex
-			0.5f, -0.5f, 0.0f, //Bottom-right vertex
-			0.0f, 0.5f, 0.0f //Top vertex
-		};
 
-		private Vertex[] _vertices = {
-			new(-0.5f, -0.5f, 0.0f),
-			new(0.5f, -0.5f, 0.0f),
-			new(0.0f, 0.5f, 0.0f),
-		};
-		
-		private int _vertexBufferObject;
-		private int _vertexArrayObject;
+		public float FrameTime;
 		private readonly InputSystem _inputSystem = new();
-		private Shader _shader;
+		private int fps;
 
-		public Engine() : base( GameWindowSettings.Default, NativeWindowSettings.Default ) {
+		// START MOVETO Camera
+		float speed = 1.5f;
+		private Matrix4 view;
+		Vector3 position = new Vector3(0.0f, 0.0f,  3.0f);
+		Vector3 front = new Vector3(0.0f, 0.0f, -1.0f);
+		Vector3 up = new Vector3(0.0f, 1.0f,  0.0f);
+		// END MOVETO
+
+		public Engine(string[] args) : base(GameWindowSettings.Default, NativeWindowSettings.Default) {
+			BasicConfigurator.Configure();
 		}
 
 		protected override void OnUpdateFrame(FrameEventArgs evt) {
-			
+			// update how much ticks we lost since last update
+			FrameTime = (float) evt.Time;
+
 			_inputSystem.CheckInput(this, KeyboardState);
+			// if ( _world != null ) _world.Update( FrameTime );
+			
+			// START MOVETO camera/InputSystem
+			if (!IsFocused) { // check to see if the window is focused
+				return;
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.W)) {
+				position += front * speed * FrameTime; //Forward 
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.S)) {
+				position -= front * speed * FrameTime; //Backwards
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.A)) {
+				position -= Vector3.Normalize(Vector3.Cross(front, up)) * speed * FrameTime; //Left
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.D)) {
+				position += Vector3.Normalize(Vector3.Cross(front, up)) * speed * FrameTime; //Right
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.Space)) {
+				position += up * speed * FrameTime; //Up 
+			}
+
+			if (KeyboardState.IsKeyDown(Keys.LeftShift)) {
+				position -= up * speed * FrameTime; //Down
+			} 
+			
+			view = Matrix4.LookAt(new Vector3(0.0f, 0.0f, 3.0f), 
+				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(0.0f, 1.0f, 0.0f));
+			// END MOVETO
 
 			base.OnUpdateFrame(evt);
-		}
-
-		protected override void OnLoad() {
-			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			Context.SwapBuffers();
-			
-			_vertexBufferObject = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-			
-			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-			_vertexArrayObject = GL.GenVertexArray();
-			// ..:: Initialization code (done once (unless your object frequently changes)) :: ..
-			// 1. bind Vertex Array Object
-			GL.BindVertexArray(_vertexArrayObject);
-			// 2. copy our vertices array in a buffer for OpenGL to use
-			GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-			// 3. then set our vertex attributes pointers
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-			GL.EnableVertexAttribArray(0);
-			
-			_shader = new Shader("src/shader/triangle.shader");
-
-			base.OnLoad();
-		}
-
-		protected override void OnUnload() {
-			_shader.Dispose();
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			GL.DeleteBuffer(_vertexBufferObject);
-			base.OnUnload();
-		}
-
-		protected override void OnRenderFrame(FrameEventArgs args) {
-			GL.Clear(ClearBufferMask.ColorBufferBit);
-
-			_shader.Use();
-			GL.BindVertexArray(_vertexArrayObject);
-			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-			
-			Context.SwapBuffers();
-			
-			base.OnRenderFrame(args);
-		}
-
-		protected override void OnResize(ResizeEventArgs e) {
-			GL.Viewport(0, 0, this.Size.X, this.Size.Y);
-			
-			base.OnResize(e);
 		}
 
 		public void Destroy() {
@@ -90,5 +80,17 @@ namespace Gamengine.core  {
 		public InputSystem GetInputSystem() {
 			return _inputSystem;
 		}
+		
+		// TODO: ABSTRACT
+		// protected override void OnRenderFrame(FrameEventArgs evt) {
+		// 	FrameTime += (float) evt.Time;
+		// 	fps++;
+		// 	if (FrameTime >= 1) {
+		// 		FrameTime = 0;
+		// 		Title = "Gamegine demo " + fps + " fps";
+		// 		fps = 0;
+		// 	}
+		// }
+
 	}
 }
